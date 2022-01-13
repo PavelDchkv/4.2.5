@@ -11,12 +11,26 @@ inputLine.addEventListener('input', debounce(async function () {
 }, 400));
 
 async function search(searchLine) {
-    const response = await fetch(`https://api.github.com/search/repositories?q=${searchLine}&per_page=5`);
-    if (response.status === 200) {
-        let result = await response.json();
+    let response;
+
+        try {
+            response = await fetch(`https://api.github.com/search/repositories?q=${searchLine}&per_page=5`);
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
+
+        if (response.status !== 200) return null;
+
+        let result;
+        try {
+            result = await response.json();
+        } catch (err) {
+            console.log(err);
+            return null;
+        }
+
         return result.items;
-    }
-    return null;
 }
 
 function  appendNewList(arrOfRepositories) {
